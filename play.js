@@ -15,34 +15,25 @@ function play() {
         '2': false,
         '3': false
     };
-    doors[getRandomDoor()] = true;
+    const carDoor = getRandomDoor();
+    doors[carDoor] = true;
+
     const choice = getRandomDoor()
-    while (true) {
-        const doorToRemove = getRandomDoor();
-        if (doorToRemove !== choice && doors[doorToRemove] === false) {
-            delete doors[doorToRemove];
-            break;
-        }
-    }
-    let carDoor;
-    for (const [key, value] of Object.entries(doors)) {
-        if (value === true) {
-            carDoor = key;
-        }
-    }
-    const switchChoice = getYesOrNo();
-    if (!switchChoice) {
-        return carDoor === choice ? 'stayWins' : 'stayLosses';
-    }
-    if (switchChoice) {
-        return carDoor !== choice ? 'switchWins' : 'switchLosses';
-    }
+
+    const doorToRemove = Object.keys(doors).find(key => key !== choice && key !== carDoor);
+    delete doors[doorToRemove];
+
+    const switchChoice = !!Math.floor(Math.random() * 2);
+
+    return !switchChoice
+        ? carDoor === choice
+            ? 'stayWins'
+            : 'stayLosses'
+        : carDoor !== choice
+            ? 'switchWins'
+            : 'switchLosses';
 }
 
 function getRandomDoor() {
     return `${Math.floor(Math.random() * 3) + 1}`;
-}
-
-function getYesOrNo() {
-    return !!Math.floor(Math.random() * 2);
 }
